@@ -17,6 +17,7 @@ public class Demo {
 		md.put("currency", "098989898");
 		mp.put("data", md);
 		mp.put("fields", f);
+		System.err.println("sss");
 		System.err.println(rx.isBody(mp));
 		
 		
