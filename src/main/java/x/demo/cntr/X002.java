@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import x.utils.http.HttpXr;
+
 @RestController
 @RequestMapping("/x/demo")
 public class X002 {
-	@SuppressWarnings("unused")
 	@PostMapping("/x002")
 	public ResponseEntity<Map<String, Object>> fn_X001(@RequestBody String data)
 			throws Exception {
@@ -32,8 +32,8 @@ public class X002 {
 			x.put("path", "/v1/transfers");
 			x.put("params", data);
 			x.put("method", "post");
-			// x.put("auth", "Basic " + encodedString);
-			x.put("cont_tp" , "application/json;charset=UTF-8");
+			x.put("auth", "Basic " + encodedString);
+			x.put("cont_tp", "application/json;charset=UTF-8");
 
 			m = htx.callX(x);
 

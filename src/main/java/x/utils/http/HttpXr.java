@@ -93,12 +93,8 @@ public class HttpXr {
 
 			if(m.get("params") instanceof Map<?, ?>){
 				params = om.writeValueAsString(m.get("params"));
-			}else if(dxr.isJson(String.valueOf(m.get("params")))){
+			}else {
 				params = (String) m.get("params");
-			}else{
-				d.put("err_cd", "500");
-				d.put("err_msg", "params is invalid");
-				return d;
 			}
 			
 			method = (String) m.get("method");
