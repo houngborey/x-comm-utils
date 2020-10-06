@@ -30,7 +30,7 @@ public class X001 {
 		try {
 			HttpXr htx = new HttpXr();
 			Map<String, Object> x = new HashMap<String, Object>();
-			x.put("url", "http://103.69.68.222:11999");
+			x.put("domain", "http://103.69.68.222:11999");
 			x.put("path", "/SeatelPayment/pay.jsp");
 			x.put("params", data);
 			x.put("method", "post");

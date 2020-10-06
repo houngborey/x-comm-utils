@@ -29,7 +29,7 @@ public class X003 {
 		try {
 			HttpXr htx = new HttpXr();
 			Map<String, Object> x = new HashMap<String, Object>();
-			x.put("url", "https://api2.paygo24.com");
+			x.put("domain", "https://api2.paygo24.com");
 			x.put("path", "/paygoservice.asmx");
 			x.put("params", data);
 			x.put("method", "post");

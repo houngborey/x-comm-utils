@@ -28,7 +28,7 @@ public class X002 {
 		try {
 			HttpXr htx = new HttpXr();
 			Map<String, Object> x = new HashMap<String, Object>();
-			x.put("url", "https://agent-network-sandbox.bongloy.com");
+			x.put("domain", "https://agent-network-sandbox.bongloy.com");
 			x.put("path", "/v1/transfers");
 			x.put("params", data);
 			x.put("method", "post");

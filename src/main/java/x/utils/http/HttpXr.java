@@ -3,7 +3,9 @@ package x.utils.http;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -41,12 +43,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class HttpXr {
 
 	/*
-	 * { "url", "path", "params", "method", "auth", "cont_tp" };
+	 * { "domain", "path", "params", "method", "auth", "cont_tp" };
 	 */
 
-	private String[] arr = { "url", "path", "params", "method" };
+	private String[] arr = { "domain", "path", "params", "method" };
+	private String[] cmd = { "post", "get", "put", "patch", "delete" };
 	private CloseableHttpResponse httpRes = null;
-	private String url, path, params, method, auth, cont_tp;
+	private String domain, path, params, method, auth, cont_tp;
 	private MapXr mxr;
 	private DataXr dxr;
 
@@ -59,15 +62,15 @@ public class HttpXr {
 		Map<String, Object> d = new HashMap<String, Object>();
 		try {
 			if (arr.length < 0) {
-				d.put("err_cd", "500");
-				d.put("err_msg", "no params");
+				d.put("http_code", "500");
+				d.put("http_msg", "no params");
 				return d;
 			}
 
 			for (int i = 0; i < arr.length; i++) {
 				if (!m.containsKey(arr[i])) {
-					d.put("err_cd", "500");
-					d.put("err_msg", arr[i] + " is required");
+					d.put("http_code", "500");
+					d.put("http_msg", arr[i] + " is required");
 					return d;
 				}
 			}
@@ -75,31 +78,37 @@ public class HttpXr {
 				String strV = String.valueOf(o.getValue());
 				String strK = String.valueOf(o.getKey());
 				if (strV == null || StringUtils.equalsIgnoreCase(strV, "null")) {
-					d.put("err_cd", "500");
-					d.put("err_msg", strK + " is invalid");
+					d.put("http_code", "500");
+					d.put("http_msg", strK + " is invalid");
 					return d;
 				} else if (StringUtils.isBlank(strV)) {
-					d.put("err_cd", "500");
-					d.put("err_msg", strK + " is invalid");
+					d.put("http_code", "500");
+					d.put("http_msg", strK + " is invalid");
 					return d;
 				}
 			}
 
 			// init common params
-			url = (String) m.get("url");
+			domain = (String) m.get("domain");
 			path = (String) m.get("path");
-			
+
 			ObjectMapper om = new ObjectMapper();
 
-			if(m.get("params") instanceof Map<?, ?>){
+			if (m.get("params") instanceof Map<?, ?>) {
 				params = om.writeValueAsString(m.get("params"));
-			}else {
+			} else {
 				params = (String) m.get("params");
 			}
-			
+
 			method = (String) m.get("method");
 			auth = (String) m.get("auth");
 			cont_tp = (String) m.get("cont_tp");
+			List<String> ls = Arrays.asList(cmd);
+			if (!ls.contains(method.toLowerCase())) {
+				d.put("http_code", "500");
+				d.put("http_msg", "method is not valid" + Arrays.asList(cmd));
+				return d;
+			}
 
 			TrustStrategy trustStrategy = (cert, authType) -> true;
 			SSLContext sslContext = SSLContexts.custom()
@@ -119,7 +128,7 @@ public class HttpXr {
 					.setSSLSocketFactory(sslsf)
 					.setConnectionManager(connectionManager).build();
 
-			URIBuilder urlBuilder = new URIBuilder(url);
+			URIBuilder urlBuilder = new URIBuilder(domain);
 			urlBuilder.setPath(path);
 			URI uri = urlBuilder.build();
 
@@ -200,10 +209,10 @@ public class HttpXr {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-
+			d.put("http_code", "500");
+			d.put("http_msg", "Target host is not specified");
+			return d;
 		}
-		return null;
-
 	}
 
 	public String getHtx(int sts) {
